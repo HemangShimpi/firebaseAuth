@@ -258,6 +258,15 @@ class ProfileScreen extends StatelessWidget {
 
   ProfileScreen({required this.user});
 
+  void _signOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    // Navigate back to the login screen and clear previous routes
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => MyHomePage(title: 'Firebase Auth Demo')),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -266,21 +275,17 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.of(context).pop(); // Go back to login screen
-            },
-          ),
+            tooltip: 'Logout',
+            onPressed: () => _signOut(context),
+          )
         ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Welcome, ${user.email}!',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            Text('Welcome, ${user.email}!',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             Text('User ID: ${user.uid}'),
           ],
@@ -289,3 +294,4 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
+
